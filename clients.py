@@ -5,13 +5,15 @@ def prompt() :
 	sys.stdout.write('<You> ')
 	sys.stdout.flush()
 
-#def registrate() :
-#	sys.stdout.write('Masukkan username anda : ')
-#	username = sys.stdin.readline()
-#	if not msg : #username berupa whitespace
-#		sys.stdout.write('[Error] Username harus berupa string\n')
-#	s.send(msg)
+def registrate() :
+	sys.stdout.write('Masukkan username anda : ')
+	username = sys.stdin.readline().rstrip('\n')
 	
+	if username :
+		print '[Sukses] Username anda adalah '+username+'\n'
+		s.send(username) 
+	else :#username berupa whitespace
+		print '[Error] Username harus berupa string\n'
 	
 #main function
 if __name__ == "__main__" :
@@ -20,9 +22,9 @@ if __name__ == "__main__" :
 		print ' Cara menggunakan : python clients.py <hostname> <port>\n'
 		sys.exit()
 		
+		
 	host = sys.argv[1]
 	port = int (sys.argv[2])
-	
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	
 	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -37,9 +39,10 @@ if __name__ == "__main__" :
 	LIMIT = 4096
 	
 	
-	print 'Terkoneksi ke server. Ketik pesan anda!\n'
-	prompt()
+	print '\nKoneksi ke server sukses!\nRegistrasi terlebih dahulu'
 	
+	registrate()
+	prompt()
 	
 	while True:
 		list_socket = [sys.stdin, s]
@@ -47,22 +50,19 @@ if __name__ == "__main__" :
 		
 		for sock in read_sockets :
 			if sock == s : #ada pesan masuk dari server
-				data = sock.recv(LIMIT)
-				if not data :
-					sys.stdout.write('Terputus dari server chat\n')
-					break
-				else :
-					sys.stdout.write(data) #print data
+				data = s.recv(LIMIT)
+				if data != None and data != False:
+					#print data
+					sys.stdout.write(data)
 					prompt()
 				
 			else : #user memasukkan pesan
-				msg = sys.stdin.readline()
+				msg = sys.stdin.readline().rstrip('\n')
 				
-				if str(msg.rstrip('\n')) =='exit' :
-					s.send('exit')
+				if str(msg) =='exit' :
+					s.send(msg)
 					sys.stdout.write('Memutuskan sambungan ke server...\n')
 					sys.exit()
-					
 				else :
 					s.send(msg) #mengirim pesan...
 					prompt()
