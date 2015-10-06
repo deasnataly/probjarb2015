@@ -3,11 +3,22 @@ import string
 import select
 import sys
 
+def nameExists(name) :
+	if name in Clients :
+		return True
+	else :
+		return False
+
 def getNamebySocket(socket):
 	
 	indeks = Sockets.index(socket)
 	senderName = Clients[indeks]
 	return str(senderName)
+
+def getSocketbyName(name):
+	indeks = Clients.index(name)
+	socket = Sockets[indeks]
+	return socket
 
 def broadcast_data (sock, msg):	#sock : socket si pengirim data
 	
@@ -17,12 +28,20 @@ def broadcast_data (sock, msg):	#sock : socket si pengirim data
 	for socket in Sockets :
 		if socket != sock_server and socket!= sock :
 			socket.send(message)
-		
+
+def privateMsg(sockFrom, nameTo, msg):
+	senderName = getNamebySocket(sockFrom)
+	if nameTo in Clients :
+		message = '\r[PrivateMessage] from <' + senderName + '> ' + msg + '\n'
+		sockTo = getSocketbyName(nameTo)
+		sockTo.send(message)
+	else :
+		sockFrom.send('\r Username yang dituju belum terdaftar')
 
 def storeNewClientData ( newClient_socket ):
 	
 	newClient_name = newClient_socket.recv(LIMIT)
-	Clients.append(newClient_name)
+	Clients.appendd(newClient_name)
 	Sockets.append(newClient_socket)
 	#notification
 	print newClient_name +' sekarang terhubung ke server.'
@@ -36,15 +55,19 @@ def client_isOffline ( off_socket ):
 	Clients.remove(off_name)
 	Sockets.remove(off_socket)
 
-# THE MVP
+def listClients( sockRequested ):
+	for client in Clients :
+		sockRequested.send('\rOnline : ' + client + '\n')
+		
+
+# THE MVP !
 # kill -9 $(ps aux | grep '[p]ython' | awk '{print $2}')
 
-
-#main function
 if __name__ == "__main__" :
 	
 	Clients = [] #array of clients name
 	Sockets = [] #array of sockets
+	
 	LIMIT = 4096
 	HOST = "0.0.0.0"
 	PORT = 5000
@@ -53,6 +76,7 @@ if __name__ == "__main__" :
 	sock_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) #reuse address
 	sock_server.bind((HOST, PORT))
 	sock_server.listen(10)
+	
 	Clients.append('server')
 	Sockets.append(sock_server)
 	print "\nServer terhubung ke jaringan ! Port server : " + str(PORT)
@@ -70,8 +94,13 @@ if __name__ == "__main__" :
 					if msg =='exit' :
 						client_isOffline(sock) #kirim data socket client yang exiting
 					else :
-						broadcast_data(sock, msg)
-					
-					
+						arrayMsg = msg.split(' ',2)
+						if arrayMsg[0]=='pm' :
+							nameTo = arrayMsg[1]
+							privateMsg(sock, nameTo, arrayMsg[2].rstrip('\n') )
+						if arrayMsg[0]=='listUser' :
+							listClients(sock)
+						else :
+							broadcast_data(sock, msg)
 	sock_server.close()
 	sys.exit()
