@@ -4,6 +4,14 @@ import socket, select, string, sys
 def prompt() :
 	sys.stdout.write('<You> ')
 	sys.stdout.flush()
+
+#def registrate() :
+#	sys.stdout.write('Masukkan username anda : ')
+#	username = sys.stdin.readline()
+#	if not msg : #username berupa whitespace
+#		sys.stdout.write('[Error] Username harus berupa string\n')
+#	s.send(msg)
+	
 	
 #main function
 if __name__ == "__main__" :
@@ -17,44 +25,48 @@ if __name__ == "__main__" :
 	
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	
+	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	s.settimeout(2)
 	
-	#connect ke remote host
 	try :
 		s.connect((host, port))
 	except :
 		print 'Tidak bisa konek, host anda mungkin tidak aktif atau salah port\n'
 		sys.exit()
 		
-	#sukses di try, masuk ke bawah
 	LIMIT = 4096
 	
 	
 	print 'Terkoneksi ke server. Ketik pesan anda!\n'
-	prompt() #masuk ke fungsi diatas
+	prompt()
 	
 	
-	while 1:
+	while True:
 		list_socket = [sys.stdin, s]
-		#cari list socket yang readable
 		read_sockets, write_sockets, error_sockets = select.select(list_socket, [], [])
 		
 		for sock in read_sockets :
 			if sock == s : #ada pesan masuk dari server
 				data = sock.recv(LIMIT)
 				if not data :
-					print '\nTerputus dari server chat\n'
-					sys.exit()
+					sys.stdout.write('Terputus dari server chat\n')
+					break
 				else :
 					sys.stdout.write(data) #print data
 					prompt()
 				
 			else : #user memasukkan pesan
 				msg = sys.stdin.readline()
-				s.send(msg)
-				prompt()
 				
+				if str(msg.rstrip('\n')) =='exit' :
+					s.send('exit')
+					sys.stdout.write('Memutuskan sambungan ke server...\n')
+					sys.exit()
 					
-		
+				else :
+					s.send(msg) #mengirim pesan...
+					prompt()
+					
+	sys.exit()
 		
 		
