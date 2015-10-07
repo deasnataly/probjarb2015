@@ -2,6 +2,14 @@ import socket
 import string
 import select
 import sys
+from datetime import date,datetime
+
+# [NEW_USR]
+# [USR_OFF]
+# [NEW_GPC]
+# [GPC_OFF]
+# [ASK_ONU]
+# datetime : datetime.now().strftime("%H:%M:%S, %d:%m:%y")
 
 def nameExists(name) :
 	if name in Clients :
@@ -10,7 +18,6 @@ def nameExists(name) :
 		return False
 
 def getNamebySocket(socket):
-	
 	indeks = Sockets.index(socket)
 	senderName = Clients[indeks]
 	return str(senderName)
@@ -21,10 +28,8 @@ def getSocketbyName(name):
 	return socket
 
 def broadcast_data (sock, msg):	#sock : socket si pengirim data
-	
 	senderName = getNamebySocket(sock)
-	message = '\r<' + senderName + '> ' + msg + '\n'
-	
+	message = '\r' + senderName + ': ' + msg + '\n'
 	for socket in Sockets :
 		if socket != sock_server and socket!= sock :
 			socket.send(message)
@@ -32,32 +37,35 @@ def broadcast_data (sock, msg):	#sock : socket si pengirim data
 def privateMsg(sockFrom, nameTo, msg):
 	senderName = getNamebySocket(sockFrom)
 	if nameTo in Clients :
-		message = '\r[PrivateMessage] from <' + senderName + '> ' + msg + '\n'
+		message = '\r[PrivateMessage] from ' + senderName + ' : ' + msg + '\n'
 		sockTo = getSocketbyName(nameTo)
 		sockTo.send(message)
 	else :
-		sockFrom.send('\r Username yang dituju belum terdaftar')
+		sockFrom.send('\r[Error] Username yang dituju belum terdaftar\n')
 
-def storeNewClientData ( newClient_socket ):
-	
-	newClient_name = newClient_socket.recv(LIMIT)
-	Clients.appendd(newClient_name)
+def storeNewClientData ( newClient_socket, newClient_name ):
+	Clients.append(newClient_name)
 	Sockets.append(newClient_socket)
 	#notification
-	print newClient_name +' sekarang terhubung ke server.'
-	broadcast_data (sockfd, '\r' + newClient_name + ' sekarang terhubung ke server.\n')
+	print datetime.now().strftime("%H:%M:%S, %d:%m:%y") +' [NEW_USR] '+  newClient_name +' sekarang terhubung '
+	
+	broadcast_data (sockfd, '\r[NEW_USR] ' + newClient_name + ' sekarang terhubung ke server.')
+	
 	
 def client_isOffline ( off_socket ):
-	
 	off_name = getNamebySocket(off_socket)
-	print off_name+' terputus dari server.'
-	broadcast_data (sockfd, '\r' + off_name + ' terputus dari server.\n')
-	Clients.remove(off_name)
 	Sockets.remove(off_socket)
+	print datetime.now().strftime("%H:%M:%S, %d:%m:%y") +' [USR_OFF] ' + off_name +' terputus dari server.'
+	broadcast_data (sockfd, '\r[USR_OFF] ' + off_name + ' terputus dari server.')
+	Clients.remove(off_name)
+	
 
 def listClients( sockRequested ):
+	print datetime.now().strftime("%H:%M:%S, %d:%m:%y") +' [ASK_ONU] '  + getNamebySocket(sockRequested) +' meminta user online.'
+	sockRequested.send('\r    List User Online')
 	for client in Clients :
-		sockRequested.send('\rOnline : ' + client + '\n')
+			sockRequested.send('\r    Online : ' + client)
+
 		
 
 # THE MVP !
@@ -71,13 +79,12 @@ if __name__ == "__main__" :
 	LIMIT = 4096
 	HOST = "0.0.0.0"
 	PORT = 5000
-	
 	sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) #reuse address
 	sock_server.bind((HOST, PORT))
 	sock_server.listen(10)
 	
-	Clients.append('server')
+	Clients.append('Server')
 	Sockets.append(sock_server)
 	print "\nServer terhubung ke jaringan ! Port server : " + str(PORT)
 	
@@ -87,7 +94,18 @@ if __name__ == "__main__" :
 		for sock in read_sockets:
 			if sock == sock_server : 
 				sockfd, addr = sock_server.accept()
-				storeNewClientData(sockfd)
+				
+				gogo = False
+				while gogo!=True :
+					uname = sockfd.recv(LIMIT)
+					if uname!=None and uname!=False :
+						if uname in Clients :
+							sockfd.send('false')
+						else :
+							sockfd.send('true')
+							storeNewClientData(sockfd, uname)
+							gogo=True
+							
 			else :
 				msg = sock.recv(LIMIT)
 				if msg :
@@ -97,8 +115,8 @@ if __name__ == "__main__" :
 						arrayMsg = msg.split(' ',2)
 						if arrayMsg[0]=='pm' :
 							nameTo = arrayMsg[1]
-							privateMsg(sock, nameTo, arrayMsg[2].rstrip('\n') )
-						if arrayMsg[0]=='listUser' :
+							privateMsg(sock, nameTo, arrayMsg[2] )
+						elif arrayMsg[0]=='listuser' :
 							listClients(sock)
 						else :
 							broadcast_data(sock, msg)

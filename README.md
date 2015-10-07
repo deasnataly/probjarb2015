@@ -12,21 +12,23 @@
 <p>
 1. INISIALISASI
 	[*] Port server diinput sendiri oleh user
-	[*] Client harus registrasi terlebih dahulu sebelum join roomchat
-		* errorHandling saat username sudah ada
-	[*] Client dapat notifikasi jika registrasi sukses
+	[DONE] Client harus registrasi terlebih dahulu sebelum join roomchat
+		[DONE] errorHandling saat username sudah ada
+	[DONE] Client dapat notifikasi jika registrasi sukses
 	
 2. PERSONAL
-	[*] Client bisa mengirim pesan broadcast, tanpa harus mengetikkan header apapun
-	[*] Client bisa mengirim PM
-		* Format : pm {username yang dituju} {pesan yang ingin dikirimkan}
-	[*] Client bisa menerima pesan broadcast 
-	[*] Client bisa menerima PM
-		* Format : [PrivateMessage] from {username pengirim} : {pesan yang ingin dikirimkan}
+	[DONE] Client bisa mengirim pesan broadcast, tanpa harus mengetikkan header apapun
+	[DONE] Client bisa mengirim PM
+		[DONE] Format : pm {username yang dituju} {pesan yang ingin dikirimkan}
+		[DONE] Client mendapat notif saat user yang ia PM tidak terdaftar
+		[DONE] Client mendapat notif saat ia mengirim pesan kosong
+	[DONE] Client bisa menerima pesan broadcast 
+	[DONE] Client bisa menerima PM
+		[DONE] Format : [PrivateMessage] from {username pengirim} : {pesan yang ingin dikirimkan}
 	[*] Client bisa melihat identitas dirinya sendiri (whoami)
 		* Format : whoami
-	[*] Client bisa melihat siapa aja user yang sedang online
-		* Format : listuser
+	[DONE] Client bisa melihat siapa aja user yang sedang online
+		[DONE] Format : listuser
 	
 3. GROUPCHAT // fiturnya susah nih
 
@@ -53,6 +55,8 @@
 		* Errorhandling saat mengundang user yang sudah menerima undangan yang sama sebelumnya.
 		
 	Didalam grup chat:
+	[*] Client bisa melihat pesan yang dikirim di dalam grupchatnya
+		* Format : [Grupchat] {sender}@{groupchat} : {pesan yang dikirimkan}
 	[*] Client bisa melihat siapa saja yang sudah bergabung dengan grupchatnya
 		* Format : switchgrup {groupchat} listuser
 	[*] Client bisa mengirimkan pesan ke grupchatnya
@@ -70,9 +74,9 @@
 
 4. KELUAR DARI PROGRAM
 
-	[*] Client bisa keluar dari program dengan mengetikkan 'exit'
-	[*] Server mendapat notifikasi username user yang keluar dari program chat
-	[*] Client mendapat notifikasi username user yang keluar dari program chat
+	[DONE] Client bisa keluar dari program dengan mengetikkan 'exit'
+	[DONE] Server mendapat notifikasi username user yang keluar dari program chat
+	[DONE] Client mendapat notifikasi username user yang keluar dari program chat
 	</p>
 	
 <h4>Pengembangan program</h4>

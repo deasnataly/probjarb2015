@@ -1,8 +1,9 @@
 #telnet program example (?)
 import socket, select, string, sys
 
+
 def prompt() :
-	sys.stdout.write('<You> ')
+	sys.stdout.write('Pesan anda : ')
 	sys.stdout.flush()
 
 def registrate() :
@@ -10,16 +11,21 @@ def registrate() :
 	username = sys.stdin.readline().rstrip('\n')
 	
 	if username :
-		print '[Sukses] Username anda adalah '+username+'\n'
 		s.send(username) 
+		respons = s.recv(LIMIT)
+		if str(respons) == 'false' and respons != None and respons != None :
+			print '[Error] Username tersebut sudah terdaftar !'
+		if str(respons) == 'true' and respons != None  and respons != False :
+			print '[Sukses] Username anda adalah '+ username
+			return True
 	else :#username berupa whitespace
-		print '[Error] Username harus berupa string\n'
+		print '[Error] Username harus berupa string !'
 	
 #main function
 if __name__ == "__main__" :
 	
 	if(len(sys.argv) < 3): #kalau jumlah kata yang di enter di python kurang dari 3
-		print ' Cara menggunakan : python clients.py <hostname> <port>\n'
+		print ' Cara menggunakan : python clients.py <hostname> <port>'
 		sys.exit()
 		
 		
@@ -33,15 +39,19 @@ if __name__ == "__main__" :
 	try :
 		s.connect((host, port))
 	except :
-		print 'Tidak bisa konek, host anda mungkin tidak aktif atau salah port\n'
+		print 'Tidak bisa konek, host anda mungkin tidak aktif atau salah port'
 		sys.exit()
 		
 	LIMIT = 4096
 	
 	
-	print '\nKoneksi ke server sukses!\nRegistrasi terlebih dahulu'
+	print '====================================\nKoneksi ke server sukses!\nRegistrasi terlebih dahulu'
+	Flag = False
+	Flag = registrate()
 	
-	registrate()
+	while Flag!=True:
+		Flag=registrate()
+	
 	prompt()
 	
 	while True:
