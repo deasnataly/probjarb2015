@@ -9,7 +9,6 @@
 <p> Teknik Informatika ITS, Surabaya </p>
 
 <h4> List Fitur dan Progress</h4>
-<p>
 1. INISIALISASI
 	[*] Port server diinput sendiri oleh user
 	[DONE] Client harus registrasi terlebih dahulu sebelum join roomchat
@@ -77,14 +76,11 @@
 	[DONE] Client bisa keluar dari program dengan mengetikkan 'exit'
 	[DONE] Server mendapat notifikasi username user yang keluar dari program chat
 	[DONE] Client mendapat notifikasi username user yang keluar dari program chat
-	</p>
 	
 <h4>Pengembangan program</h4>
-<p>
 1.	Menggunakan multiproses
 2.	Dengan pendekatan OOP
 3.	Terminal baru untuk chat tertentu
-	</p>
 
 	
 
