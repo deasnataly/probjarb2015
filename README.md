@@ -29,49 +29,7 @@
 		[DONE] Client bisa melihat siapa aja user yang sedang online
 			[DONE] Format : listuser
 		
-	3. GROUPCHAT // fiturnya susah nih
-	
-		Inisialisasi :
-		[*] Client bisa membuat nama untuk grupchatnya sendiri
-			* Format : creategrup {grupchat_name} {*optional : adduser { username(s) }}
-			* Errorhandling saat nama yang dipilih sudah terdaftar sebagai user ataupun grupchat
-		[*] Client bisa mengirimkan permintaan bergabung ke user-user yang online untuk gabung grupchat 
-			* Format : switchgrup {groupchat} adduser { username(s) }
-		[*] Minimal ada 1 client yang tergabung dlm grupchat 
-		
-		Permintaan bergabung :
-		[*] Client bisa menerima permintaan bergabung dengan groupchat
-			* Invitation berisi : username pengirim, nama grupchat, client yang sudah bergabung
-			* Clients yang tergabung groupchat mendapat notifikasi bahwa invitation telah dikirim (id username)
-		[*] Client bisa menerima ataupun menolak undangan grupchat tersebut
-			* Clients yang tergabung groupchat mendapat notifikasi bahwa invitation ditolak atau diterima
-		[*] Client yang tidak menerima invitation tidak bisa bergabung ke grupchat
-			* #TODO#
-		[*] Client yang sudah tergabung bisa mengirim invitation kepada userlain bergabung ke grupchat tersebut
-			* Format : switchgrup {groupchat} adduser { username(s) }
-			* Errorhandling saat mengundang user yang tidak terdaftar
-			* Errorhandling saat mengundang user yang sudah tergabung sebelumnya
-			* Errorhandling saat mengundang user yang sudah menerima undangan yang sama sebelumnya.
-			
-		Didalam grup chat:
-		[*] Client bisa melihat pesan yang dikirim di dalam grupchatnya
-			* Format : [Grupchat] {sender}@{groupchat} : {pesan yang dikirimkan}
-		[*] Client bisa melihat siapa saja yang sudah bergabung dengan grupchatnya
-			* Format : switchgrup {groupchat} listuser
-		[*] Client bisa mengirimkan pesan ke grupchatnya
-			* Format : switchgrup {groupchat} {message}
-		
-		Keluar dari grupchat
-		[*] Client bisa keluar dari grupchat
-			* Format : exitgrup {nama grupchat}
-			* Client yang masih tergabung dng groupchat mendapat notifikasi : '{[Groupchat]} {username} meninggalkan groupchat'
-		
-		Menghapus Groupchat
-		[*] Pembuat grupchat tidak bisa menghapus grupchat, semua client yang tergabung punya hak akses sama
-			* #TODO#
-		[*] Jika hanya satu client tersisa di dalam grupchat dan client exit groupchat, maka groupchat tersebut terhapus otomatis
-	
-	4. KELUAR DARI PROGRAM
+	3. KELUAR DARI PROGRAM
 	
 		[DONE] Client bisa keluar dari program dengan mengetikkan 'exit'
 		[DONE] Server mendapat notifikasi username user yang keluar dari program chat
