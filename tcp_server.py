@@ -70,7 +70,7 @@ def listClients( sockRequested ):
 	print datetime.now().strftime("%H:%M:%S, %d:%m:%y") +' [ASK_ONU] '  + getNamebySocket(sockRequested) +' meminta user online.'
 	sockRequested.send('\r    List User Online')
 	for client in Clients :
-			sockRequested.send('\r    Online : ' + client)
+			sockRequested.send('\r    Online : ' + client + '\n')
 
 		
 
@@ -124,8 +124,6 @@ if __name__ == "__main__" :
 							privateMsg(sock, nameTo, arrayMsg[2] )
 						elif arrayMsg[0]=='listuser' :
 							listClients(sock)
-						elif arrayMsg[0]=='whoami' :
-							sock.send('\r' + getNamebySocket(sock) +'\n')
 						else :
 							broadcast_data(sock, msg)
 	sock_server.close()
