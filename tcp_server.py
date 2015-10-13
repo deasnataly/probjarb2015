@@ -36,10 +36,16 @@ def broadcast_data (sock, msg):	#sock : socket si pengirim data
 
 def privateMsg(sockFrom, nameTo, msg):
 	senderName = getNamebySocket(sockFrom)
+	if msg == False or msg == None or msg == '' or msg == '\n' :
+		msg = ' mengirimkan sebuah pesan kosong.'
+		
 	if nameTo in Clients :
 		message = '\r[PrivateMessage] from ' + senderName + ' : ' + msg + '\n'
 		sockTo = getSocketbyName(nameTo)
-		sockTo.send(message)
+		if sockTo == sockFrom :
+			sockFrom.send('\r[Warning] You are sending to yourself an empty message, its prohibited!\n')
+		else :
+			sockTo.send(message)
 	else :
 		sockFrom.send('\r[Error] Username yang dituju belum terdaftar\n')
 
@@ -84,7 +90,7 @@ if __name__ == "__main__" :
 	sock_server.bind((HOST, PORT))
 	sock_server.listen(10)
 	
-	Clients.append('Server')
+	Clients.append('Pengawas')
 	Sockets.append(sock_server)
 	print "\nServer terhubung ke jaringan ! Port server : " + str(PORT)
 	
@@ -118,6 +124,8 @@ if __name__ == "__main__" :
 							privateMsg(sock, nameTo, arrayMsg[2] )
 						elif arrayMsg[0]=='listuser' :
 							listClients(sock)
+						elif arrayMsg[0]=='whoami' :
+							sock.send('\r' + getNamebySocket(sock) +'\n')
 						else :
 							broadcast_data(sock, msg)
 	sock_server.close()
