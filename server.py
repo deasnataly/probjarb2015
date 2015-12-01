@@ -4,7 +4,7 @@ import time
 import sys
 import os
 
-PORT = 8103
+PORT = 8000
 
 class Respon(threading.Thread):
     def __init__(self, newConn, newAddr,nama):
