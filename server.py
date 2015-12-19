@@ -26,13 +26,8 @@ class Respon(threading.Thread):
         # self.newConn.send(pecahkan[1::])
         if( str(splits[1]) == '/' ) :
             responses = responses + self.openfile( str('default.jpg'))
-        elif( str(pecahkan) == '10' ) :
-            responses = responses + self.openfile( str('10.jpg'))
-        elif len(pecahkan)==1:
-            if os.path.isfile(str(pecahkan)+'.jpg'):
+        elif os.path.isfile(str(pecahkan)+'.jpg'):
                 responses = responses + self.openfile( str(pecahkan)+'.jpg')
-            else :
-                responses = responses + self.openfile( str('404.jpg'))
         else :
             responses = responses + self.openfile( str('404.jpg'))
         self.newConn.send(responses)
@@ -80,8 +75,8 @@ class Server(threading.Thread):
                 responses = responses + data
                 print 'responses = ' + str(responses)
                 if(responses.endswith("\r\n\r\n")):
-                    print 'One connection finished their request'
                     self.newConn.send('HTTP/1.1 200 OK \r\n\r\n'+self.openfile('1.jpg'))
+                    print 'One connection finished their request'
                     break
         self.newConn.close()
 
@@ -90,7 +85,7 @@ class Server(threading.Thread):
         while True:
             self.newConn , self.connAddress = self.servsocket.accept()
             #handling
-            newConnection = Respon(self.newConn, self.connAddress, 'ampas check')
+#            newConnection = Respon(self.newConn, self.connAddress, 'ampas check')
             newConnection.start()
 
 
